@@ -1,0 +1,95 @@
+<aura:component controller="LookUpController" >
+   <!---Use Salesforce Lightning Design System CSS From Static resources-->   
+  <!-- <ltng:require styles="{!$Resource.SLDS24 + '/assets/styles/salesforce-lightning-design-system.css'}"/>-->
+   
+    <!--declare attributes--> 
+   <aura:attribute name="selectedRecord" type="Contact" default="{}" description="Use,for store SELECTED sObject Record"/>
+   <aura:attribute name="selectedAccountRecord" type="Account" default="{}" description="Use,for store SELECTED sObject Record"/>
+  
+    <aura:attribute name="listOfSearchRecords" type="Contact[]" description="Use,for store the list of search records which returns from apex class"/>
+   <aura:attribute name="listOfSearchRecordsACC" type="Account[]" description="Use,for store the list of search records which returns from apex class"/>
+   
+    <aura:attribute name="SearchKeyWordAcc" type="string" default=""/>
+    <aura:attribute name="SearchKeyWordCon" type="string" default=""/>
+   <aura:attribute name="disableLookup" type="Boolean" default="true"/>
+    <aura:attribute name="showSpinner" type="Boolean" default="false"/>
+     <aura:attribute name="showConSpinner" type="Boolean" default="false"/>
+   <aura:attribute name="Message" type="String" default="Search Result.."/>
+   <aura:attribute name="Searchrecordtype" type="string"/> 
+   <!--declare events hendlers-->  
+   <aura:handler name="selectedContactEvent" event="c:selectedRecordEvent" action="{!c.handleComponentEvent}"/>
+    <aura:method name="callChild" action="{!c.clearvalues}" />
+    <aura:registerEvent name="cleartable" type="c:cleardataevt"/>
+     <!--<aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+   <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>-->
+    <aura:if isTrue="{!v.Searchrecordtype =='Account'}">
+   <div class="slds-m-around--large">
+      <div aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+          <!--<h4 class="slds-page-header__title"> Account Name </h4>-->
+         <!--This part is for display search bar for lookup-->  
+         <div class="slds-form-element__control">
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+               <div aura:id="lookup-pill" class="slds-pill-container slds-hide">
+                  <span class="slds-pill">
+                     <lightning:pill class="pillSize" label="{!v.selectedAccountRecord.Name}" name="{!v.selectedAccountRecord.Name}" onremove="{! c.clear }">
+                        <aura:set attribute="media">
+                            <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="{!v.IconName}"/>
+                        </aura:set>
+                      </lightning:pill>
+                     
+                  </span>
+               </div>
+              <div aura:id="lookupField" class="slds-show">
+               <ui:inputText  updateOn="keyup" keyup="{!c.keyPressController}" class="slds-lookup__search-input slds-input " value="{!v.SearchKeyWordAcc}" placeholder="Search.." disabled="{!v.disableLookup}"/>
+              </div>   
+            </div>
+         </div>
+         <!--This part is for Display typehead lookup result List-->  
+         <div class="slds-lookup__menu slds" id="lookup-348">
+            <div class="slds-lookup__item--label slds-text-body--small">{!v.Message}</div>
+             <center> <aura:if isTrue="{!v.showSpinner}"><ui:spinner aura:id="spinner"/> </aura:if></center>
+             <ul class="slds-lookup__list" role="listbox">
+               <aura:iteration items="{!v.listOfSearchRecordsACC}" var="singleRec">
+                    <c:customLookupResult AccountRec="{!singleRec}" Searchrecordtype="{!v.Searchrecordtype}"/>
+               </aura:iteration>
+            </ul>
+         </div>
+      </div>
+   </div>
+    </aura:if>
+    
+<aura:if isTrue="{!v.Searchrecordtype =='Contact'}">    
+    <div class="slds-m-around--large">
+      <div aura:id="searchRes1" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+         <div class="slds-form-element__control">
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+              <div aura:id="lookup-pill1" class="slds-pill-container slds-hide">
+                  <span class="slds-pill">
+                    
+                      <lightning:pill class="pillSize" label="{!v.selectedRecord.Name}" name="{!v.selectedRecord.Name}" onremove="{! c.clear }">
+                        <aura:set attribute="media">
+                            <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="{!v.IconName}"/>
+                        </aura:set>
+                      </lightning:pill>
+                     
+                  </span>
+               </div>
+              <div aura:id="lookupField1" class="slds-show">
+               <ui:inputText  updateOn="keyup" keyup="{!c.keyPressController}" class="slds-lookup__search-input slds-input " value="{!v.SearchKeyWordCon}" placeholder="Search.." disabled="{!v.disableLookup}"/>
+              </div>   
+            </div>
+         </div>
+         <!--This part is for Display typehead lookup result List-->  
+         <div class="slds-lookup__menu slds" id="lookup-348">
+            <div class="slds-lookup__item--label slds-text-body--small">{!v.Message}</div>
+           <div> <center><aura:if isTrue="{!v.showConSpinner}"><ui:spinner aura:id="spinner1"/> </aura:if> </center> </div>
+            <ul class="slds-lookup__list" role="listbox">
+               <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+                  <c:customLookupResult contactRec="{!singleRec}" Searchrecordtype="{!v.Searchrecordtype}"/>
+               </aura:iteration>
+            </ul>
+         </div>
+      </div>
+   </div>
+    </aura:if>
+</aura:component>

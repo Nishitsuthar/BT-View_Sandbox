@@ -1,0 +1,1 @@
+public class CheckIfOrderIsOrderBooked { public static boolean AutoBookOrderStatic = False; }
